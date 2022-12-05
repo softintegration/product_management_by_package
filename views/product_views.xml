@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="product_template_form_view_inherited" model="ir.ui.view">
+            <field name="name">product.template.form.view.inherited</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <group name="group_lots_and_weight" position="inside">
+                    <label for="managed_by_package" attrs="{'invisible':[('type','!=','product')]}"
+                           groups="stock.group_tracking_lot"/>
+                    <div attrs="{'invisible':[('type','!=','product')]}"
+                           groups="stock.group_tracking_lot">
+                        <field name="managed_by_package"
+                           />
+                    </div>
+
+                </group>
+            </field>
+        </record>
+
+    </data>
+</odoo>

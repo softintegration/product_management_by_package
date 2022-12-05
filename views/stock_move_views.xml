@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+  <data>
+
+        <record id="view_stock_move_line_detailed_operation_tree_inherited" model="ir.ui.view">
+          <field name="name">view.stock.move.line.detailed.operation.tree.inherited</field>
+          <field name="model">stock.move.line</field>
+          <field name="inherit_id" ref="stock.view_stock_move_line_detailed_operation_tree"/>
+          <field name="arch" type="xml">
+            <xpath expr="//field[@name='package_id']" position="before">
+              <field name="managed_by_package" invisible="1"/>
+              <field name="package_id_required" invisible="1"/>
+              <field name="result_package_id_required" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='package_id']" position="attributes">
+              <attribute name="attrs">{'required':[('package_id_required','=',True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='result_package_id']" position="attributes">
+              <attribute name="attrs">{'required':[('result_package_id_required','=',True)]}</attribute>
+            </xpath>
+          </field>
+        </record>
+
+        <record id="view_stock_move_line_operation_tree_inherited" model="ir.ui.view">
+          <field name="name">view.stock.move.line.operation.tree.inherited</field>
+          <field name="model">stock.move.line</field>
+          <field name="inherit_id" ref="stock.view_stock_move_line_operation_tree"/>
+          <field name="arch" type="xml">
+            <xpath expr="//field[@name='package_id']" position="before">
+              <field name="managed_by_package" invisible="1"/>
+              <field name="package_id_required" invisible="1"/>
+              <field name="result_package_id_required" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='package_id']" position="attributes">
+              <attribute name="attrs">{'readonly': ['&amp;', ('package_level_id', '!=', False), ('parent.picking_type_entire_packs', '=', True)],'required':[('package_id_required','=',True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='result_package_id']" position="attributes">
+              <attribute name="attrs">{'readonly': ['&amp;', ('package_level_id', '!=', False), ('parent.picking_type_entire_packs', '=', True)],'required':[('result_package_id_required','=',True)]}</attribute>
+            </xpath>
+          </field>
+        </record>
+
+
+
+  </data>
+</odoo>
