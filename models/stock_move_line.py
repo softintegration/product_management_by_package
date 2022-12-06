@@ -33,11 +33,16 @@ class StockMoveLine(models.Model):
         return res
 
     def _check_packages(self):
-        for each in self:
-            if each.package_id_required and not each.package_id:
+        for each in self.filtered(lambda ml:not self._deleted_line(ml)):
+            if each and each.package_id_required and not each.package_id:
                 raise ValidationError(_("Source package is required for product %s!")%each.product_id.display_name)
-            if each.result_package_id_required and not each.result_package_id:
+            if each and each.result_package_id_required and not each.result_package_id:
                 raise ValidationError(_("Destination package is required for product %s!")%each.product_id.display_name)
+
+    @api.model
+    def _deleted_line(self,move_line):
+        """ Detect he removed move line records during this transaction or concurrent one"""
+        return not self.env.cache.contains(move_line, self) and not move_line.exists()
 
 
 
