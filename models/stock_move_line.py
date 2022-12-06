@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*- 
 
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError
+from odoo.exceptions import ValidationError
 from odoo.osv import expression
 
 
@@ -26,4 +26,18 @@ class StockMoveLine(models.Model):
     def _compute_result_package_id_required(self):
         for each in self:
             each.result_package_id_required = each.managed_by_package
+
+    def _action_done(self):
+        res = super(StockMoveLine, self)._action_done()
+        self._check_packages()
+        return res
+
+    def _check_packages(self):
+        for each in self:
+            if each.package_id_required and not each.package_id:
+                raise ValidationError(_("Source package is required for product %s!")%each.product_id.display_name)
+            if each.result_package_id_required and not each.result_package_id:
+                raise ValidationError(_("Destination package is required for product %s!")%each.product_id.display_name)
+
+
 
