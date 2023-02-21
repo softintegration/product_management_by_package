@@ -4,7 +4,7 @@ from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 from odoo.osv import expression
 
-IGNORED_DESTINATION_PACKAGE_TYPES = ('mrp_operation','outgoing')
+IGNORED_DESTINATION_PACKAGE_TYPES = ('mrp_operation', 'outgoing')
 
 
 class StockMoveLine(models.Model):
@@ -23,12 +23,13 @@ class StockMoveLine(models.Model):
     def _compute_package_id_required(self):
         for each in self:
             each.package_id_required = each.managed_by_package and each.picking_id.picking_type_code in (
-            'internal', 'outgoing')
+                'internal', 'outgoing')
 
     @api.depends('managed_by_package')
     def _compute_result_package_id_required(self):
         for each in self:
-            each.result_package_id_required = each.managed_by_package and each.picking_type_id.code not in IGNORED_DESTINATION_PACKAGE_TYPES
+            each.result_package_id_required = each.managed_by_package and each.picking_type_id.code \
+                                              and each.picking_type_id.code not in IGNORED_DESTINATION_PACKAGE_TYPES
 
     def _action_done(self):
         res = super(StockMoveLine, self)._action_done()
