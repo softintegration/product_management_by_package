@@ -3,6 +3,7 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 from odoo.osv import expression
+from odoo.tools.float_utils import float_compare
 
 IGNORED_DESTINATION_PACKAGE_TYPES = ('mrp_operation', 'outgoing')
 
@@ -41,6 +42,13 @@ class StockMoveLine(models.Model):
         for each in self:
             if each and each.package_id_required and not each.package_id:
                 raise ValidationError(_("Source package is required for product %s!") % each.product_id.display_name)
-            if each and each.result_package_id_required and not each.result_package_id:
+            if each and not each._move_line_will_be_removed() and each.result_package_id_required and not each.result_package_id:
                 raise ValidationError(
                     _("Destination package is required for product %s!") % each.product_id.display_name)
+
+    def _move_line_will_be_removed(self):
+        self.ensure_one()
+        # we have used the same logic used by the stock.move.line._action_done to select move lines to be removed
+        return float_compare(self.qty_done, 0, precision_rounding=self.product_uom_id.rounding) == 0 and not self.is_inventory
+
+
